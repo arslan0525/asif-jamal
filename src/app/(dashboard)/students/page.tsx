@@ -59,11 +59,11 @@ export default function StudentsPage() {
           <p className="text-muted-foreground">Manage all registered students across classes.</p>
         </div>
         <Dialog>
-          <DialogTrigger asChild>
+          <DialogTrigger render={
             <Button>
               <UserPlus className="mr-2 h-4 w-4" /> Add Student
             </Button>
-          </DialogTrigger>
+          } />
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Add New Student</DialogTitle>
