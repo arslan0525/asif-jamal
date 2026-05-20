@@ -25,9 +25,20 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useLocalStorage, initialInventory, InventoryItem } from "@/lib/store"
+import { useLanguage } from "@/components/language-provider"
 
 export default function KitchenPage() {
+  const { t, isUrdu } = useLanguage()
   const [inventoryList, setInventoryList] = useLocalStorage<InventoryItem[]>("madarsa_kitchen", initialInventory)
+
+  const formatUnitValue = (valStr: string) => {
+    if (!valStr) return "";
+    if (!isUrdu) return valStr;
+    return valStr
+      .replace("kg", "کلو گرام")
+      .replace("Liters", "لیٹر")
+      .replace("pcs", "عدد");
+  }
   const [searchQuery, setSearchQuery] = useState("")
   const [isOpen, setIsOpen] = useState(false)
   const [isUsageOpen, setIsUsageOpen] = useState(false)
@@ -178,28 +189,28 @@ export default function KitchenPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Kitchen Management</h2>
-          <p className="text-muted-foreground">Manage grocery inventory and daily usage.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("kitTitle")}</h2>
+          <p className="text-muted-foreground">{t("kitSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline">Usage History</Button>
+          <Button variant="outline">{t("usageHistory")}</Button>
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger render={
               <Button>
-                <Plus className="mr-2 h-4 w-4" /> Add Stock
+                <Plus className="mr-2 h-4 w-4" /> {t("addStock")}
               </Button>
             } />
             <DialogContent className="sm:max-w-[425px]">
               <form onSubmit={handleAddStockSubmit}>
                 <DialogHeader>
-                  <DialogTitle>Add / Top Up Stock</DialogTitle>
+                  <DialogTitle>{t("addStock")}</DialogTitle>
                   <DialogDescription>
-                    Add a new item or replenish existing items in the inventory.
+                    {isUrdu ? "انوینٹری میں نیا راشن شامل کریں یا موجودہ اسٹاک میں اضافہ کریں۔" : "Add a new item or replenish existing items in the inventory."}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="item">Item Name</Label>
+                    <Label htmlFor="item">{t("itemName")}</Label>
                     <Input 
                       id="item" 
                       placeholder="E.g. Rice, Sugar, Cooking Oil" 
@@ -209,7 +220,7 @@ export default function KitchenPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="remaining">Quantity to Add</Label>
+                    <Label htmlFor="remaining">{t("quantityToAdd")}</Label>
                     <div className="flex gap-2">
                       <Input 
                         id="remaining" 
@@ -226,15 +237,15 @@ export default function KitchenPage() {
                         value={newItem.unit}
                         onChange={(e) => setNewItem({...newItem, unit: e.target.value})}
                       >
-                        <option value="kg">kg</option>
-                        <option value="Liters">Liters</option>
-                        <option value="pcs">pcs</option>
+                        <option value="kg">{isUrdu ? "کلو" : "kg"}</option>
+                        <option value="Liters">{isUrdu ? "لیٹر" : "Liters"}</option>
+                        <option value="pcs">{isUrdu ? "عدد" : "pcs"}</option>
                       </select>
                     </div>
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit">Save Stock</Button>
+                  <Button type="submit">{t("saveStock")}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -248,14 +259,14 @@ export default function KitchenPage() {
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleRecordUsageSubmit}>
               <DialogHeader>
-                <DialogTitle>Record Usage - {selectedUsageItem.item}</DialogTitle>
+                <DialogTitle>{t("recordUsage")} - {selectedUsageItem.item}</DialogTitle>
                 <DialogDescription>
-                  Subtract from remaining inventory. Current stock: {selectedUsageItem.remaining}.
+                  {t("recordUsageDesc", { stock: formatUnitValue(selectedUsageItem.remaining) })}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="usage-amount">Quantity Used ({selectedUsageItem.unit})</Label>
+                  <Label htmlFor="usage-amount">{t("quantityUsed")} ({formatUnitValue(selectedUsageItem.unit)})</Label>
                   <Input 
                     id="usage-amount" 
                     type="number"
@@ -269,7 +280,7 @@ export default function KitchenPage() {
               </div>
               <DialogFooter>
                 <Button type="submit" className="bg-orange-600 hover:bg-orange-700 text-white">
-                  <Flame className="mr-2 h-4 w-4" /> Consume Stock
+                  <Flame className="mr-2 h-4 w-4" /> {t("consumeStock")}
                 </Button>
               </DialogFooter>
             </form>
@@ -283,14 +294,14 @@ export default function KitchenPage() {
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleEditSubmit}>
               <DialogHeader>
-                <DialogTitle>Edit Inventory Item</DialogTitle>
+                <DialogTitle>{t("editInventoryTitle")}</DialogTitle>
                 <DialogDescription>
-                  Modify the details of the item.
+                  {t("editInventoryDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-item">Item Name</Label>
+                  <Label htmlFor="edit-item">{t("itemName")}</Label>
                   <Input 
                     id="edit-item" 
                     value={editingItem.item}
@@ -299,7 +310,7 @@ export default function KitchenPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-quantity">Current Quantity</Label>
+                  <Label htmlFor="edit-quantity">{t("currentQuantity")}</Label>
                   <Input 
                     id="edit-quantity" 
                     type="number"
@@ -309,21 +320,21 @@ export default function KitchenPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-unit">Unit</Label>
+                  <Label htmlFor="edit-unit">{t("unit")}</Label>
                   <select 
                     id="edit-unit"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={editingItem.unit}
                     onChange={(e) => setEditingItem({...editingItem, unit: e.target.value})}
                   >
-                    <option value="kg">kg</option>
-                    <option value="Liters">Liters</option>
-                    <option value="pcs">pcs</option>
+                    <option value="kg">{isUrdu ? "کلو" : "kg"}</option>
+                    <option value="Liters">{isUrdu ? "لیٹر" : "Liters"}</option>
+                    <option value="pcs">{isUrdu ? "عدد" : "pcs"}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Update Item</Button>
+                <Button type="submit">{t("updateRecord")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -335,14 +346,14 @@ export default function KitchenPage() {
         <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
           <DialogContent className="sm:max-w-[400px]">
             <DialogHeader>
-              <DialogTitle className="text-destructive">Delete Item</DialogTitle>
+              <DialogTitle className="text-destructive">{t("deleteInventoryTitle")}</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete <strong>{deletingItem.item}</strong> from the grocery inventory monitor? This action cannot be undone.
+                {t("deleteInventoryDesc", { item: deletingItem.item })}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-2 sm:gap-0">
-              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
+              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>{t("cancel")}</Button>
+              <Button variant="destructive" onClick={handleDeleteConfirm}>{t("delete")}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -351,7 +362,7 @@ export default function KitchenPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Items Monitored</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totItemsMonitored")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalItemsMonitored}</div>
@@ -360,16 +371,16 @@ export default function KitchenPage() {
         <Card className="bg-destructive/10 border-destructive/20">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-destructive flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4" /> Low Stock Alerts
+              <AlertTriangle className="h-4 w-4" /> {t("lowStockAlerts")}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{lowStockAlerts} Items</div>
+            <div className="text-2xl font-bold text-destructive">{lowStockAlerts} {isUrdu ? "اشیاء" : "Items"}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Est. Monthly Grocery Expense</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("estMonthlyGrocery")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Rs {groceryExpense.toLocaleString()}</div>
@@ -380,11 +391,11 @@ export default function KitchenPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle>Current Inventory</CardTitle>
+            <CardTitle>{t("currentInventory")}</CardTitle>
             <div className="relative w-full md:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input 
-                placeholder="Search items..." 
+                placeholder={t("searchItems")} 
                 className="pl-8" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -397,11 +408,11 @@ export default function KitchenPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Item Name</TableHead>
-                  <TableHead>Remaining</TableHead>
-                  <TableHead className="hidden md:table-cell">Usage Today</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("itemName")}</TableHead>
+                  <TableHead>{t("remaining")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("usageToday")}</TableHead>
+                  <TableHead>{t("status")}</TableHead>
+                  <TableHead className="text-right">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -414,17 +425,17 @@ export default function KitchenPage() {
                           {item.item}
                         </div>
                       </TableCell>
-                      <TableCell className="font-semibold">{item.remaining}</TableCell>
-                      <TableCell className="hidden md:table-cell">{item.usageToday}</TableCell>
+                      <TableCell className="font-semibold">{formatUnitValue(item.remaining)}</TableCell>
+                      <TableCell className="hidden md:table-cell">{formatUnitValue(item.usageToday)}</TableCell>
                       <TableCell>
                         <Badge variant={item.status === "Low Stock" ? "destructive" : "secondary"}>
-                          {item.status}
+                          {item.status === "Low Stock" ? (isUrdu ? "کم اسٹاک" : "Low Stock") : (isUrdu ? "بہتر" : "Good")}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end items-center gap-1">
                           <Button variant="outline" size="sm" onClick={() => handleRecordUsageClick(item)} className="h-8 text-xs">
-                            Record Usage
+                            {t("recordUsage")}
                           </Button>
                           <Button variant="ghost" size="sm" onClick={() => handleEditClick(item)}>
                             <Pencil className="h-4 w-4" />

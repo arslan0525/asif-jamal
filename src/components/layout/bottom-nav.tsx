@@ -4,17 +4,19 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, Users, CalendarCheck, Wallet, Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/components/language-provider"
 
 const bottomNavItems = [
-  { name: "Home", href: "/", icon: LayoutDashboard },
-  { name: "Students", href: "/students", icon: Users },
-  { name: "Attendance", href: "/attendance", icon: CalendarCheck },
-  { name: "Finance", href: "/fees", icon: Wallet },
-  { name: "More", href: "/settings", icon: Menu },
-]
+  { name: "dashboard", href: "/", icon: LayoutDashboard },
+  { name: "students", href: "/students", icon: Users },
+  { name: "attendance", href: "/attendance", icon: CalendarCheck },
+  { name: "fees", href: "/fees", icon: Wallet },
+  { name: "settings", href: "/settings", icon: Menu },
+] as const
 
 export function BottomNav() {
   const pathname = usePathname()
+  const { t } = useLanguage()
 
   return (
     <div className="fixed bottom-0 z-50 w-full border-t bg-background pb-safe md:hidden">
@@ -32,7 +34,7 @@ export function BottomNav() {
               )}
             >
               <item.icon className={cn("h-5 w-5", isActive && "fill-primary/20")} />
-              <span className="text-[10px] font-medium">{item.name}</span>
+              <span className="text-[10px] font-medium">{t(item.name)}</span>
             </Link>
           )
         })}

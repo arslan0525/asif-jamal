@@ -27,7 +27,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useLocalStorage, initialStudents, Student } from "@/lib/store"
+import { useLanguage } from "@/components/language-provider"
+import { useLocalStorage, initialStudents, Student, availableClasses } from "@/lib/store"
 
 interface AttendanceRecord {
   [studentId: string]: "Present" | "Absent" | "Leave"
@@ -38,6 +39,7 @@ interface DailyAttendanceLogs {
 }
 
 export default function AttendancePage() {
+  const { t } = useLanguage()
   const [studentsList] = useLocalStorage<Student[]>("madarsa_students", initialStudents)
   const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0])
   const [selectedClass, setSelectedClass] = useState("all")
@@ -106,23 +108,19 @@ export default function AttendancePage() {
   const filteredStudents = (studentsList || []).filter(s => {
     if (s.status !== "Active") return false
     if (selectedClass === "all") return true
-    if (selectedClass === "hifz1" && s.class === "Hifz Class 1") return true
-    if (selectedClass === "hifz2" && s.class === "Hifz Class 2") return true
-    if (selectedClass === "nazra" && s.class === "Nazra") return true
-    if (selectedClass === "aalim" && s.class === "Aalim Course") return true
-    return false
+    return s.class === selectedClass
   })
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Attendance</h2>
-          <p className="text-muted-foreground">Mark and review daily attendance.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("attTitle")}</h2>
+          <p className="text-muted-foreground">{t("attSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline"><CalendarIcon className="mr-2 h-4 w-4" /> View Monthly</Button>
-          <Button onClick={handleSaveAttendance}>Save Attendance</Button>
+          <Button variant="outline"><CalendarIcon className="mr-2 h-4 w-4" /> {t("viewMonthly")}</Button>
+          <Button onClick={handleSaveAttendance}>{t("saveAttendance")}</Button>
         </div>
       </div>
 
@@ -133,13 +131,13 @@ export default function AttendancePage() {
             <Check className="h-6 w-6" />
           </div>
           <DialogHeader>
-            <DialogTitle className="text-center font-bold">Register Saved</DialogTitle>
+            <DialogTitle className="text-center font-bold">{t("registerSavedTitle")}</DialogTitle>
             <DialogDescription className="text-center mt-2">
-              Daily attendance register has been saved successfully for {new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}.
+              {t("registerSavedDesc", { date: new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 sm:justify-center">
-            <Button onClick={() => setIsSavedOpen(false)} className="w-full sm:w-auto">OK</Button>
+            <Button onClick={() => setIsSavedOpen(false)} className="w-full sm:w-auto">{t("language") === "ur" ? "ٹھیک ہے" : "OK"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -147,7 +145,7 @@ export default function AttendancePage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle>Daily Register</CardTitle>
+            <CardTitle>{t("dailyRegister")}</CardTitle>
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-2 border rounded-md px-3 py-2 bg-background">
                 <CalendarIcon className="h-4 w-4 text-muted-foreground" />
@@ -159,15 +157,14 @@ export default function AttendancePage() {
                 />
               </div>
               <Select value={selectedClass} onValueChange={(val) => setSelectedClass(val || "all")}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Select Class" />
+                <SelectTrigger className="w-[170px]">
+                  <SelectValue placeholder={t("language") === "ur" ? "کلاس منتخب کریں" : "Select Class"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Classes</SelectItem>
-                  <SelectItem value="hifz1">Hifz Class 1</SelectItem>
-                  <SelectItem value="hifz2">Hifz Class 2</SelectItem>
-                  <SelectItem value="nazra">Nazra</SelectItem>
-                  <SelectItem value="aalim">Aalim Course</SelectItem>
+                  <SelectItem value="all">{t("allClasses")}</SelectItem>
+                  {availableClasses.map((cls) => (
+                    <SelectItem key={cls} value={cls}>{cls}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -178,10 +175,10 @@ export default function AttendancePage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">ID</TableHead>
-                  <TableHead>Student Name</TableHead>
-                  <TableHead className="hidden md:table-cell">Class</TableHead>
-                  <TableHead className="text-right">Status</TableHead>
+                  <TableHead className="w-[80px]">{t("stuId")}</TableHead>
+                  <TableHead>{t("student")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("class")}</TableHead>
+                  <TableHead className="text-right">{t("status")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -202,7 +199,7 @@ export default function AttendancePage() {
                               className={status === "Present" ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}
                             >
                               <CheckCircle2 className="h-4 w-4 md:mr-1" />
-                              <span className="hidden md:inline">Present</span>
+                              <span className="hidden md:inline">{t("present")}</span>
                             </Button>
                             <Button 
                               variant={status === "Absent" ? "destructive" : "outline"} 
@@ -211,7 +208,7 @@ export default function AttendancePage() {
                               className={status === "Absent" ? "bg-destructive text-destructive-foreground hover:bg-destructive" : ""}
                             >
                               <XCircle className="h-4 w-4 md:mr-1" />
-                              <span className="hidden md:inline">Absent</span>
+                              <span className="hidden md:inline">{t("absent")}</span>
                             </Button>
                             <Button 
                               variant={status === "Leave" ? "secondary" : "outline"} 
@@ -220,7 +217,7 @@ export default function AttendancePage() {
                               className={status === "Leave" ? "bg-secondary text-secondary-foreground" : ""}
                             >
                               <Clock className="h-4 w-4 md:mr-1" />
-                              <span className="hidden md:inline">Leave</span>
+                              <span className="hidden md:inline">{t("leave")}</span>
                             </Button>
                           </div>
                         </TableCell>
@@ -230,7 +227,7 @@ export default function AttendancePage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} className="h-24 text-center">
-                      No active students in selected class.
+                      {t("noActiveStudents")}
                     </TableCell>
                   </TableRow>
                 )}

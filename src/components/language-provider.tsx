@@ -1,13 +1,13 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from "react"
-
-type Language = "en" | "ur"
+import { Language, useTranslation, translations } from "@/lib/translations"
 
 interface LanguageContextType {
   language: Language
   setLanguage: (lang: Language) => void
   isUrdu: boolean
+  t: (key: keyof typeof translations["en"], replacements?: Record<string, string | number>) => string
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -17,7 +17,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // When language changes, update dir attribute for RTL support
-    document.documentElement.dir = language === "ur" ? "rtl" : "ltr"
+    const dir = language === "ur" ? "rtl" : "ltr"
+    document.documentElement.dir = dir
     
     if (language === "ur") {
       document.documentElement.classList.add("font-urdu")
@@ -28,8 +29,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, [language])
 
+  const { t } = useTranslation(language)
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, isUrdu: language === "ur" }}>
+    <LanguageContext.Provider value={{ language, setLanguage, isUrdu: language === "ur", t }}>
       {children}
     </LanguageContext.Provider>
   )

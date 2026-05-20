@@ -64,13 +64,23 @@ export interface Activity {
   time: string
 }
 
+export const availableClasses = [
+  "Hifz 1",
+  "Hifz 2",
+  "Hifz 3",
+  "Nazra 1",
+  "Nazra 2",
+  "Nazra 3",
+  "Aalim"
+]
+
 // Initial Data
 export const initialStudents: Student[] = [
-  { id: "STU-001", name: "Ahmed Raza", class: "Hifz Class 1", parentName: "Muhammad Ali", phone: "0300-1234567", status: "Active" },
-  { id: "STU-002", name: "Bilal Khan", class: "Nazra", parentName: "Tariq Khan", phone: "0311-9876543", status: "Active" },
-  { id: "STU-003", name: "Omar Farooq", class: "Aalim Course", parentName: "Usman Farooq", phone: "0322-4567890", status: "Inactive" },
-  { id: "STU-004", name: "Zaid Abdullah", class: "Hifz Class 2", parentName: "Abdullah", phone: "0333-1122334", status: "Active" },
-  { id: "STU-005", name: "Hassan Ali", class: "Nazra", parentName: "Ali Reza", phone: "0344-5566778", status: "Active" },
+  { id: "STU-001", name: "Ahmed Raza", class: "Hifz 1", parentName: "Muhammad Ali", phone: "0300-1234567", status: "Active" },
+  { id: "STU-002", name: "Bilal Khan", class: "Nazra 1", parentName: "Tariq Khan", phone: "0311-9876543", status: "Active" },
+  { id: "STU-003", name: "Omar Farooq", class: "Aalim", parentName: "Usman Farooq", phone: "0322-4567890", status: "Inactive" },
+  { id: "STU-004", name: "Zaid Abdullah", class: "Hifz 2", parentName: "Abdullah", phone: "0333-1122334", status: "Active" },
+  { id: "STU-005", name: "Hassan Ali", class: "Nazra 2", parentName: "Ali Reza", phone: "0344-5566778", status: "Active" },
 ]
 
 export const initialDonations: Donation[] = [
@@ -95,9 +105,9 @@ export const initialExpenses: Expense[] = [
 ]
 
 export const initialTeachers: Teacher[] = [
-  { id: "TCH-001", name: "Qari Tariq", class: "Hifz Class 1", phone: "0300-1112223", salary: 25000, status: "Active" },
-  { id: "TCH-002", name: "Maulana Usman", class: "Aalim Course", phone: "0311-4445556", salary: 35000, status: "Active" },
-  { id: "TCH-003", name: "Hafiz Bilal", class: "Nazra", phone: "0322-7778889", salary: 20000, status: "On Leave" },
+  { id: "TCH-001", name: "Qari Tariq", class: "Hifz 1", phone: "0300-1112223", salary: 25000, status: "Active" },
+  { id: "TCH-002", name: "Maulana Usman", class: "Aalim", phone: "0311-4445556", salary: 35000, status: "Active" },
+  { id: "TCH-003", name: "Hafiz Bilal", class: "Nazra 1", phone: "0322-7778889", salary: 20000, status: "On Leave" },
 ]
 
 export const initialInventory: InventoryItem[] = [

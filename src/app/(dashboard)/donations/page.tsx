@@ -26,8 +26,10 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useLocalStorage, initialDonations, Donation } from "@/lib/store"
+import { useLanguage } from "@/components/language-provider"
 
 export default function DonationsPage() {
+  const { t, isUrdu } = useLanguage()
   const [donationsList, setDonationsList] = useLocalStorage<Donation[]>("madarsa_donations", initialDonations)
   const [searchQuery, setSearchQuery] = useState("")
   const [isOpen, setIsOpen] = useState(false)
@@ -125,26 +127,26 @@ export default function DonationsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Donations</h2>
-          <p className="text-muted-foreground">Manage Zakat, Sadaqah, and General Donations.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("donTitle")}</h2>
+          <p className="text-muted-foreground">{t("donSubtitle")}</p>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger render={
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Donation
+              <Plus className="mr-2 h-4 w-4" /> {t("addDonation")}
             </Button>
           } />
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleSubmit}>
               <DialogHeader>
-                <DialogTitle>Add New Donation</DialogTitle>
+                <DialogTitle>{t("addDonationTitle")}</DialogTitle>
                 <DialogDescription>
-                  Record a new incoming donation.
+                  {t("addDonationDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="donor">Donor Name</Label>
+                  <Label htmlFor="donor">{t("donorNameLabel")}</Label>
                   <Input 
                     id="donor" 
                     placeholder="E.g. Haji Abdul Rehman (or Anonymous)" 
@@ -154,7 +156,7 @@ export default function DonationsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="amount">Amount (Rs)</Label>
+                  <Label htmlFor="amount">{t("amountLabel")}</Label>
                   <Input 
                     id="amount" 
                     type="number"
@@ -165,22 +167,22 @@ export default function DonationsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="type">Donation Type</Label>
+                  <Label htmlFor="type">{t("donationType")}</Label>
                   <select 
                     id="type"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newDonation.type}
                     onChange={(e) => setNewDonation({...newDonation, type: e.target.value})}
                   >
-                    <option value="General">General</option>
-                    <option value="Zakat">Zakat</option>
-                    <option value="Sadaqah">Sadaqah</option>
-                    <option value="Kitchen Only">Kitchen Only</option>
+                    <option value="General">{isUrdu ? "جنرل" : "General"}</option>
+                    <option value="Zakat">{isUrdu ? "زکوٰۃ" : "Zakat"}</option>
+                    <option value="Sadaqah">{isUrdu ? "صدقات" : "Sadaqah"}</option>
+                    <option value="Kitchen Only">{isUrdu ? "باورچی خانے کے لیے" : "Kitchen Only"}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Donation</Button>
+                <Button type="submit">{t("saveDonation")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -193,14 +195,14 @@ export default function DonationsPage() {
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleEditSubmit}>
               <DialogHeader>
-                <DialogTitle>Edit Donation</DialogTitle>
+                <DialogTitle>{t("editDonationTitle")}</DialogTitle>
                 <DialogDescription>
-                  Modify the donation details.
+                  {t("editDonationDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-donor">Donor Name</Label>
+                  <Label htmlFor="edit-donor">{t("donorNameLabel")}</Label>
                   <Input 
                     id="edit-donor" 
                     value={editingDonation.donor}
@@ -209,7 +211,7 @@ export default function DonationsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-amount">Amount (Rs)</Label>
+                  <Label htmlFor="edit-amount">{t("amountLabel")}</Label>
                   <Input 
                     id="edit-amount" 
                     type="number"
@@ -219,22 +221,22 @@ export default function DonationsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-type">Donation Type</Label>
+                  <Label htmlFor="edit-type">{t("donationType")}</Label>
                   <select 
                     id="edit-type"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={editingDonation.type}
                     onChange={(e) => setEditingDonation({...editingDonation, type: e.target.value})}
                   >
-                    <option value="General">General</option>
-                    <option value="Zakat">Zakat</option>
-                    <option value="Sadaqah">Sadaqah</option>
-                    <option value="Kitchen Only">Kitchen Only</option>
+                    <option value="General">{isUrdu ? "جنرل" : "General"}</option>
+                    <option value="Zakat">{isUrdu ? "زکوٰۃ" : "Zakat"}</option>
+                    <option value="Sadaqah">{isUrdu ? "صدقات" : "Sadaqah"}</option>
+                    <option value="Kitchen Only">{isUrdu ? "باورچی خانے کے لیے" : "Kitchen Only"}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Update Donation</Button>
+                <Button type="submit">{t("updateRecord")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -246,14 +248,14 @@ export default function DonationsPage() {
         <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
           <DialogContent className="sm:max-w-[400px]">
             <DialogHeader>
-              <DialogTitle className="text-destructive">Delete Donation Record</DialogTitle>
+              <DialogTitle className="text-destructive">{t("deleteDonationTitle")}</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete this donation of <strong>Rs {deletingDonation.amount.toLocaleString()}</strong> from <strong>{deletingDonation.donor}</strong>? This action is permanent.
+                {t("deleteDonationDesc", { amount: deletingDonation.amount.toLocaleString(), name: deletingDonation.donor })}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-2 sm:gap-0">
-              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
+              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>{t("cancel")}</Button>
+              <Button variant="destructive" onClick={handleDeleteConfirm}>{t("delete")}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -262,7 +264,7 @@ export default function DonationsPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Zakat</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totalZakat")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">Rs {zakatTotal.toLocaleString()}</div>
@@ -270,7 +272,7 @@ export default function DonationsPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Sadaqah</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totalSadaqah")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-secondary">Rs {sadaqahTotal.toLocaleString()}</div>
@@ -278,7 +280,7 @@ export default function DonationsPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Kitchen Restricted</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("kitchenRestricted")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-500">Rs {kitchenTotal.toLocaleString()}</div>
@@ -286,7 +288,7 @@ export default function DonationsPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">General Fund</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("generalFund")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Rs {generalTotal.toLocaleString()}</div>
@@ -297,11 +299,11 @@ export default function DonationsPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle>Donation Records</CardTitle>
+            <CardTitle>{t("donationRecords")}</CardTitle>
             <div className="relative w-full md:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input 
-                placeholder="Search donors..." 
+                placeholder={t("searchDonors")} 
                 className="pl-8" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -314,12 +316,12 @@ export default function DonationsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Receipt</TableHead>
-                  <TableHead>Donor Name</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead className="hidden md:table-cell">Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("receiptId")}</TableHead>
+                  <TableHead>{t("donorNameLabel")}</TableHead>
+                  <TableHead>{t("amount")}</TableHead>
+                  <TableHead>{t("donationType")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("date")}</TableHead>
+                  <TableHead className="text-right">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -340,7 +342,10 @@ export default function DonationsPage() {
                           donation.type === "Sadaqah" ? "border-secondary text-secondary" :
                           donation.type === "Kitchen Only" ? "border-orange-500 text-orange-500" : ""
                         }>
-                          {donation.type}
+                          {donation.type === "Zakat" ? (isUrdu ? "زکوٰۃ" : "Zakat") :
+                           donation.type === "Sadaqah" ? (isUrdu ? "صدقات" : "Sadaqah") :
+                           donation.type === "Kitchen Only" ? (isUrdu ? "باورچی خانے کے لیے" : "Kitchen Only") :
+                           (isUrdu ? "جنرل" : "General")}
                         </Badge>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{donation.date}</TableCell>

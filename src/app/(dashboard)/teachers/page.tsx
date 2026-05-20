@@ -32,9 +32,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useLocalStorage, initialTeachers, Teacher } from "@/lib/store"
+import { useLanguage } from "@/components/language-provider"
+import { useLocalStorage, initialTeachers, Teacher, availableClasses } from "@/lib/store"
 
 export default function TeachersPage() {
+  const { t } = useLanguage()
   const [teachersList, setTeachersList] = useLocalStorage<Teacher[]>("madarsa_teachers", initialTeachers)
   const [searchQuery, setSearchQuery] = useState("")
   const [isOpen, setIsOpen] = useState(false)
@@ -43,7 +45,7 @@ export default function TeachersPage() {
 
   const [newTeacher, setNewTeacher] = useState({
     name: "",
-    class: "Hifz Class 1",
+    class: "Hifz 1",
     phone: "",
     salary: "",
     status: "Active" as const,
@@ -94,7 +96,7 @@ export default function TeachersPage() {
 
     setNewTeacher({
       name: "",
-      class: "Hifz Class 1",
+      class: "Hifz 1",
       phone: "",
       salary: "",
       status: "Active",
@@ -132,50 +134,49 @@ export default function TeachersPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Teachers</h2>
-          <p className="text-muted-foreground">Manage teaching staff and their classes.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("tchTitle")}</h2>
+          <p className="text-muted-foreground">{t("tchSubtitle")}</p>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger render={
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Teacher
+              <Plus className="mr-2 h-4 w-4" /> {t("addTeacherBtn")}
             </Button>
           } />
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleSubmit}>
               <DialogHeader>
-                <DialogTitle>Add New Teacher</DialogTitle>
+                <DialogTitle>{t("addTeacherTitle")}</DialogTitle>
                 <DialogDescription>
-                  Enter the details to add a new teacher.
+                  {t("addTeacherDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Teacher Name</Label>
+                  <Label htmlFor="name">{t("teacher")}</Label>
                   <Input 
                     id="name" 
-                    placeholder="E.g. Qari Tariq" 
+                    placeholder="Qari Tariq" 
                     value={newTeacher.name}
                     onChange={(e) => setNewTeacher({...newTeacher, name: e.target.value})}
                     required
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="class">Assigned Class</Label>
+                  <Label htmlFor="class">{t("assignedClass")}</Label>
                   <select 
                     id="class"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newTeacher.class}
                     onChange={(e) => setNewTeacher({...newTeacher, class: e.target.value})}
                   >
-                    <option value="Hifz Class 1">Hifz Class 1</option>
-                    <option value="Hifz Class 2">Hifz Class 2</option>
-                    <option value="Nazra">Nazra</option>
-                    <option value="Aalim Course">Aalim Course</option>
+                    {availableClasses.map((cls) => (
+                      <option key={cls} value={cls}>{cls}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="phone">Contact Phone</Label>
+                  <Label htmlFor="phone">{t("phone")}</Label>
                   <Input 
                     id="phone" 
                     placeholder="0300-1112223" 
@@ -185,31 +186,31 @@ export default function TeachersPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="salary">Salary (Rs)</Label>
+                  <Label htmlFor="salary">{t("salaryLabel")}</Label>
                   <Input 
                     id="salary" 
                     type="number"
-                    placeholder="E.g. 25000" 
+                    placeholder="25000" 
                     value={newTeacher.salary}
                     onChange={(e) => setNewTeacher({...newTeacher, salary: e.target.value})}
                     required
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="status">Status</Label>
+                  <Label htmlFor="status">{t("status")}</Label>
                   <select 
                     id="status"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newTeacher.status}
                     onChange={(e) => setNewTeacher({...newTeacher, status: e.target.value as any})}
                   >
-                    <option value="Active">Active</option>
-                    <option value="On Leave">On Leave</option>
+                    <option value="Active">{t("statusActive")}</option>
+                    <option value="On Leave">{t("language") === "ur" ? "رخصت پر" : "On Leave"}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Teacher</Button>
+                <Button type="submit">{t("saveTeacher")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -222,14 +223,14 @@ export default function TeachersPage() {
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleEditSubmit}>
               <DialogHeader>
-                <DialogTitle>Edit Teacher Details</DialogTitle>
+                <DialogTitle>{t("editTeacherTitle")}</DialogTitle>
                 <DialogDescription>
-                  Modify the profile and status of the teacher.
+                  {t("editTeacherDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-name">Teacher Name</Label>
+                  <Label htmlFor="edit-name">{t("teacher")}</Label>
                   <Input 
                     id="edit-name" 
                     value={editingTeacher.name}
@@ -238,21 +239,20 @@ export default function TeachersPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-class">Assigned Class</Label>
+                  <Label htmlFor="edit-class">{t("assignedClass")}</Label>
                   <select 
                     id="edit-class"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={editingTeacher.class}
                     onChange={(e) => setEditingTeacher({...editingTeacher, class: e.target.value})}
                   >
-                    <option value="Hifz Class 1">Hifz Class 1</option>
-                    <option value="Hifz Class 2">Hifz Class 2</option>
-                    <option value="Nazra">Nazra</option>
-                    <option value="Aalim Course">Aalim Course</option>
+                    {availableClasses.map((cls) => (
+                      <option key={cls} value={cls}>{cls}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-phone">Contact Phone</Label>
+                  <Label htmlFor="edit-phone">{t("phone")}</Label>
                   <Input 
                     id="edit-phone" 
                     value={editingTeacher.phone}
@@ -261,7 +261,7 @@ export default function TeachersPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-salary">Salary (Rs)</Label>
+                  <Label htmlFor="edit-salary">{t("salaryLabel")}</Label>
                   <Input 
                     id="edit-salary" 
                     type="number"
@@ -271,20 +271,20 @@ export default function TeachersPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-status">Status</Label>
+                  <Label htmlFor="edit-status">{t("status")}</Label>
                   <select 
                     id="edit-status"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={editingTeacher.status}
                     onChange={(e) => setEditingTeacher({...editingTeacher, status: e.target.value as any})}
                   >
-                    <option value="Active">Active</option>
-                    <option value="On Leave">On Leave</option>
+                    <option value="Active">{t("statusActive")}</option>
+                    <option value="On Leave">{t("language") === "ur" ? "رخصت پر" : "On Leave"}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Update Teacher</Button>
+                <Button type="submit">{t("updateRecord")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -296,14 +296,14 @@ export default function TeachersPage() {
         <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
           <DialogContent className="sm:max-w-[400px]">
             <DialogHeader>
-              <DialogTitle className="text-destructive">Delete Teacher Record</DialogTitle>
+              <DialogTitle className="text-destructive">{t("deleteTeacherTitle")}</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete Qari/Maulana <strong>{deletingTeacher.name}</strong>? This action cannot be undone.
+                {t("deleteTeacherDesc", { name: deletingTeacher.name })}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-2 sm:gap-0">
-              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
+              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>{t("cancel")}</Button>
+              <Button variant="destructive" onClick={handleDeleteConfirm}>{t("delete")}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -312,11 +312,11 @@ export default function TeachersPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle>Teaching Staff</CardTitle>
+            <CardTitle>{t("teachingStaff")}</CardTitle>
             <div className="relative w-full md:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input 
-                placeholder="Search teachers..." 
+                placeholder={t("searchTeachers")} 
                 className="pl-8" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -329,11 +329,11 @@ export default function TeachersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Teacher</TableHead>
-                  <TableHead className="hidden md:table-cell">Assigned Class</TableHead>
-                  <TableHead className="hidden lg:table-cell">Contact</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("teacher")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("assignedClass")}</TableHead>
+                  <TableHead className="hidden lg:table-cell">{t("contact")}</TableHead>
+                  <TableHead>{t("status")}</TableHead>
+                  <TableHead className="text-right">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -363,7 +363,7 @@ export default function TeachersPage() {
                         <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                           teacher.status === "Active" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400"
                         }`}>
-                          {teacher.status}
+                          {teacher.status === "Active" ? t("statusActive") : (t("language") === "ur" ? "رخصت پر" : "On Leave")}
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
@@ -374,12 +374,12 @@ export default function TeachersPage() {
                             </Button>
                           } />
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => handleEditClick(teacher)}>
-                              <Pencil className="mr-2 h-4 w-4" /> Edit Details
+                              <Pencil className="mr-2 h-4 w-4" /> {t("language") === "ur" ? "تفصیلات تبدیل کریں" : "Edit Details"}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleDeleteClick(teacher)} className="text-destructive">
-                              <Trash className="mr-2 h-4 w-4 text-destructive" /> Remove Teacher
+                              <Trash className="mr-2 h-4 w-4 text-destructive" /> {t("language") === "ur" ? "استاد کو خارج کریں" : "Remove Teacher"}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -389,7 +389,7 @@ export default function TeachersPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
-                      No teachers found.
+                      {t("language") === "ur" ? "کوئی اساتذہ نہیں ملے۔" : "No teachers found."}
                     </TableCell>
                   </TableRow>
                 )}

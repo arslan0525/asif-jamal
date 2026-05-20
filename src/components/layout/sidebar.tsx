@@ -15,29 +15,31 @@ import {
   Settings 
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/components/language-provider"
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Students", href: "/students", icon: Users },
-  { name: "Attendance", href: "/attendance", icon: CalendarCheck },
-  { name: "Fees", href: "/fees", icon: Wallet },
-  { name: "Donations", href: "/donations", icon: HeartHandshake },
-  { name: "Expenses", href: "/expenses", icon: Receipt },
-  { name: "Kitchen", href: "/kitchen", icon: Utensils },
-  { name: "Teachers", href: "/teachers", icon: UserSquare2 },
-  { name: "Reports", href: "/reports", icon: FileText },
-  { name: "Settings", href: "/settings", icon: Settings },
-]
+  { name: "dashboard", href: "/", icon: LayoutDashboard },
+  { name: "students", href: "/students", icon: Users },
+  { name: "attendance", href: "/attendance", icon: CalendarCheck },
+  { name: "fees", href: "/fees", icon: Wallet },
+  { name: "donations", href: "/donations", icon: HeartHandshake },
+  { name: "expenses", href: "/expenses", icon: Receipt },
+  { name: "kitchen", href: "/kitchen", icon: Utensils },
+  { name: "teachers", href: "/teachers", icon: UserSquare2 },
+  { name: "reports", href: "/reports", icon: FileText },
+  { name: "settings", href: "/settings", icon: Settings },
+] as const
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { t } = useLanguage()
 
   return (
-    <div className="hidden fixed inset-y-0 left-0 z-10 border-r bg-muted/40 md:block md:w-64 lg:w-72">
+    <div className="hidden fixed inset-y-0 left-0 rtl:left-auto rtl:right-0 z-10 border-r rtl:border-r-0 rtl:border-l bg-muted/40 md:block md:w-64 lg:w-72">
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/" className="flex items-center gap-2 font-semibold text-primary">
-            <span className="text-xl font-bold font-urdu">مدرسہ سسٹم</span>
+            <span className="text-xl font-bold font-urdu">{t("logoText")}</span>
           </Link>
         </div>
         <div className="flex-1 overflow-auto py-2">
@@ -57,7 +59,7 @@ export function Sidebar() {
                   )}
                 >
                   <item.icon className="h-5 w-5" />
-                  {item.name}
+                  {t(item.name)}
                 </Link>
               )
             })}

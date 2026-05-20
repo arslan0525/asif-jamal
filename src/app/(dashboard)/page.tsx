@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { useLanguage } from "@/components/language-provider"
 import { 
   useLocalStorage, 
   initialStudents, 
@@ -29,10 +30,13 @@ import {
   FeeRecord,
   Expense,
   InventoryItem,
-  Activity
+  Activity,
+  availableClasses
 } from "@/lib/store"
 
 export default function DashboardPage() {
+  const { t } = useLanguage()
+
   // Local storage lists
   const [studentsList, setStudentsList] = useLocalStorage<Student[]>("madarsa_students", initialStudents)
   const [donationsList, setDonationsList] = useLocalStorage<Donation[]>("madarsa_donations", initialDonations)
@@ -49,7 +53,7 @@ export default function DashboardPage() {
   // Form states
   const [newStudent, setNewStudent] = useState({
     name: "",
-    class: "Hifz Class 1",
+    class: "Hifz 1",
     parentName: "",
     phone: "",
   })
@@ -127,7 +131,7 @@ export default function DashboardPage() {
     }
     setActivitiesList([newAct, ...(activitiesList || [])].slice(0, 10))
 
-    setNewStudent({ name: "", class: "Hifz Class 1", parentName: "", phone: "" })
+    setNewStudent({ name: "", class: "Hifz 1", parentName: "", phone: "" })
     setIsStudentOpen(false)
   }
 
@@ -204,51 +208,50 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Dashboard Overview</h2>
-          <p className="text-muted-foreground">Welcome back. Here's a summary of the madarsa's operations.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("dbTitle")}</h2>
+          <p className="text-muted-foreground">{t("dbSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
           
           {/* Add Student Modal */}
           <Dialog open={isStudentOpen} onOpenChange={setIsStudentOpen}>
             <DialogTrigger render={
-              <Button size="sm" className="whitespace-nowrap"><PlusCircle className="mr-2 h-4 w-4" /> Add Student</Button>
+              <Button size="sm" className="whitespace-nowrap"><PlusCircle className="mr-2 h-4 w-4" /> {t("addStudent")}</Button>
             } />
             <DialogContent className="sm:max-w-[425px]">
               <form onSubmit={handleStudentSubmit}>
                 <DialogHeader>
-                  <DialogTitle>Add New Student</DialogTitle>
+                  <DialogTitle>{t("addStudentTitle")}</DialogTitle>
                   <DialogDescription>
-                    Enter the details of the new student to enroll them.
+                    {t("addStudentDesc")}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name">{t("fullName")}</Label>
                     <Input 
                       id="name" 
-                      placeholder="E.g. Ahmed Raza" 
+                      placeholder="Ahmed Raza" 
                       value={newStudent.name}
                       onChange={(e) => setNewStudent({...newStudent, name: e.target.value})}
                       required
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="class">Class</Label>
+                    <Label htmlFor="class">{t("class")}</Label>
                     <select 
                       id="class"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       value={newStudent.class}
                       onChange={(e) => setNewStudent({...newStudent, class: e.target.value})}
                     >
-                      <option value="Hifz Class 1">Hifz Class 1</option>
-                      <option value="Hifz Class 2">Hifz Class 2</option>
-                      <option value="Nazra">Nazra</option>
-                      <option value="Aalim Course">Aalim Course</option>
+                      {availableClasses.map((cls) => (
+                        <option key={cls} value={cls}>{cls}</option>
+                      ))}
                     </select>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="parent">Parent/Guardian Name</Label>
+                    <Label htmlFor="parent">{t("parentName")}</Label>
                     <Input 
                       id="parent" 
                       placeholder="Father's name" 
@@ -258,7 +261,7 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="phone">Contact Phone</Label>
+                    <Label htmlFor="phone">{t("phone")}</Label>
                     <Input 
                       id="phone" 
                       placeholder="0300-1234567" 
@@ -269,7 +272,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit">Save Student</Button>
+                  <Button type="submit">{t("saveStudent")}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -278,55 +281,55 @@ export default function DashboardPage() {
           {/* Add Donation Modal */}
           <Dialog open={isDonationOpen} onOpenChange={setIsDonationOpen}>
             <DialogTrigger render={
-              <Button size="sm" variant="secondary" className="whitespace-nowrap"><HandCoins className="mr-2 h-4 w-4" /> Add Donation</Button>
+              <Button size="sm" variant="secondary" className="whitespace-nowrap"><HandCoins className="mr-2 h-4 w-4" /> {t("addDonation")}</Button>
             } />
             <DialogContent className="sm:max-w-[425px]">
               <form onSubmit={handleDonationSubmit}>
                 <DialogHeader>
-                  <DialogTitle>Add New Donation</DialogTitle>
+                  <DialogTitle>{t("addDonationTitle")}</DialogTitle>
                   <DialogDescription>
-                    Record a new incoming donation.
+                    {t("addDonationDesc")}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="donor">Donor Name</Label>
+                    <Label htmlFor="donor">{t("donorNameLabel")}</Label>
                     <Input 
                       id="donor" 
-                      placeholder="E.g. Haji Abdul Rehman (or Anonymous)" 
+                      placeholder="Haji Abdul Rehman" 
                       value={newDonation.donor}
                       onChange={(e) => setNewDonation({...newDonation, donor: e.target.value})}
                       required
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="amount">Amount (Rs)</Label>
+                    <Label htmlFor="amount">{t("amountLabel")}</Label>
                     <Input 
                       id="amount" 
                       type="number"
-                      placeholder="E.g. 5000" 
+                      placeholder="5000" 
                       value={newDonation.amount}
                       onChange={(e) => setNewDonation({...newDonation, amount: e.target.value})}
                       required
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="type">Donation Type</Label>
+                    <Label htmlFor="type">{t("donationType")}</Label>
                     <select 
                       id="type"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       value={newDonation.type}
                       onChange={(e) => setNewDonation({...newDonation, type: e.target.value})}
                     >
-                      <option value="General">General</option>
-                      <option value="Zakat">Zakat</option>
-                      <option value="Sadaqah">Sadaqah</option>
-                      <option value="Kitchen Only">Kitchen Only</option>
+                      <option value="General">{t("generalFund")}</option>
+                      <option value="Zakat">{t("totalZakat")}</option>
+                      <option value="Sadaqah">{t("totalSadaqah")}</option>
+                      <option value="Kitchen Only">{t("kitchenRestricted")}</option>
                     </select>
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit">Save Donation</Button>
+                  <Button type="submit">{t("saveDonation")}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -335,63 +338,63 @@ export default function DashboardPage() {
           {/* Collect Fee Modal */}
           <Dialog open={isFeeOpen} onOpenChange={setIsFeeOpen}>
             <DialogTrigger render={
-              <Button size="sm" variant="outline" className="whitespace-nowrap"><Wallet className="mr-2 h-4 w-4" /> Collect Fee</Button>
+              <Button size="sm" variant="outline" className="whitespace-nowrap"><Wallet className="mr-2 h-4 w-4" /> {t("collectFee")}</Button>
             } />
             <DialogContent className="sm:max-w-[425px]">
               <form onSubmit={handleFeeSubmit}>
                 <DialogHeader>
-                  <DialogTitle>Collect Student Fee</DialogTitle>
+                  <DialogTitle>{t("collectStudentFee")}</DialogTitle>
                   <DialogDescription>
-                    Record a fee payment.
+                    {t("collectStudentFeeDesc")}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="student-fee">Student Name</Label>
+                    <Label htmlFor="student-fee">{t("student")}</Label>
                     <Input 
                       id="student-fee" 
-                      placeholder="E.g. Ahmed Raza" 
+                      placeholder="Ahmed Raza" 
                       value={newFee.student}
                       onChange={(e) => setNewFee({...newFee, student: e.target.value})}
                       required
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="amount-fee">Amount (Rs)</Label>
+                    <Label htmlFor="amount-fee">{t("amountLabel")}</Label>
                     <Input 
                       id="amount-fee" 
                       type="number"
-                      placeholder="E.g. 2000" 
+                      placeholder="2000" 
                       value={newFee.amount}
                       onChange={(e) => setNewFee({...newFee, amount: e.target.value})}
                       required
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="month-fee">Billing Month</Label>
+                    <Label htmlFor="month-fee">{t("billingMonth")}</Label>
                     <Input 
                       id="month-fee" 
-                      placeholder="E.g. Sep 2023" 
+                      placeholder="September 2023" 
                       value={newFee.month}
                       onChange={(e) => setNewFee({...newFee, month: e.target.value})}
                       required
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="status-fee">Status</Label>
+                    <Label htmlFor="status-fee">{t("status")}</Label>
                     <select 
                       id="status-fee"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       value={newFee.status}
                       onChange={(e) => setNewFee({...newFee, status: e.target.value as any})}
                     >
-                      <option value="Paid">Paid</option>
-                      <option value="Pending">Pending</option>
+                      <option value="Paid">{t("paid")}</option>
+                      <option value="Pending">{t("pending")}</option>
                     </select>
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit">Save Record</Button>
+                  <Button type="submit">{t("saveRecord")}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -404,7 +407,7 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totStudents")}</CardTitle>
             <Users className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
@@ -413,7 +416,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Today Attendance</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("todayAtt")}</CardTitle>
             <UserCheck className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
@@ -422,7 +425,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Donations</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("dbDonations")}</CardTitle>
             <HandCoins className="h-4 w-4 text-secondary" />
           </CardHeader>
           <CardContent>
@@ -431,7 +434,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Expenses</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("dbExpenses")}</CardTitle>
             <FileText className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
@@ -440,7 +443,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Fees</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("pendingFees")}</CardTitle>
             <Wallet className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
@@ -449,11 +452,13 @@ export default function DashboardPage() {
         </Card>
         <Card className="bg-destructive/10 border-destructive/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-destructive">Low Stock</CardTitle>
+            <CardTitle className="text-sm font-medium text-destructive">{t("lowStock")}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{lowStockCount} Items</div>
+            <div className="text-2xl font-bold text-destructive">
+              {lowStockCount} {t("language") === "ur" ? "اشیاء" : "Items"}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -462,8 +467,8 @@ export default function DashboardPage() {
         {/* Main Chart */}
         <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>Income vs Expenses</CardTitle>
-            <CardDescription>Monthly comparison of all income sources and expenses.</CardDescription>
+            <CardTitle>{t("incomeVsExpense")}</CardTitle>
+            <CardDescription>{t("incomeVsExpenseDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
             <div className="h-[300px] w-full">
@@ -476,8 +481,8 @@ export default function DashboardPage() {
                     contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
                     labelStyle={{ color: 'hsl(var(--foreground))' }}
                   />
-                  <Bar dataKey="income" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Income" />
-                  <Bar dataKey="expense" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} name="Expense" />
+                  <Bar dataKey="income" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name={t("income")} />
+                  <Bar dataKey="expense" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} name={t("expense")} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -487,8 +492,8 @@ export default function DashboardPage() {
         {/* Side Chart / Recent Activity */}
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates from the madarsa operations.</CardDescription>
+            <CardTitle>{t("recentActivity")}</CardTitle>
+            <CardDescription>{t("recentActivityDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
@@ -512,7 +517,7 @@ export default function DashboardPage() {
       {/* Attendance Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Weekly Attendance Trends</CardTitle>
+          <CardTitle>{t("weeklyAttTrends")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[250px] w-full">
@@ -529,7 +534,7 @@ export default function DashboardPage() {
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
                 />
-                <Area type="monotone" dataKey="present" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPresent)" name="Present" />
+                <Area type="monotone" dataKey="present" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPresent)" name={t("present")} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

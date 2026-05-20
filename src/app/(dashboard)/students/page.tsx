@@ -32,9 +32,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useLocalStorage, initialStudents, Student } from "@/lib/store"
+import { useLocalStorage, initialStudents, Student, availableClasses } from "@/lib/store"
+import { useLanguage } from "@/components/language-provider"
 
 export default function StudentsPage() {
+  const { t } = useLanguage()
   const [studentsList, setStudentsList] = useLocalStorage<Student[]>("madarsa_students", initialStudents)
   const [searchQuery, setSearchQuery] = useState("")
   const [isOpen, setIsOpen] = useState(false)
@@ -43,7 +45,7 @@ export default function StudentsPage() {
   
   const [newStudent, setNewStudent] = useState({
     name: "",
-    class: "Hifz Class 1",
+    class: availableClasses[0] || "Hifz 1",
     parentName: "",
     phone: "",
   })
@@ -95,7 +97,7 @@ export default function StudentsPage() {
 
     setNewStudent({
       name: "",
-      class: "Hifz Class 1",
+      class: availableClasses[0] || "Hifz 1",
       parentName: "",
       phone: "",
     })
@@ -132,26 +134,26 @@ export default function StudentsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Students</h2>
-          <p className="text-muted-foreground">Manage all registered students across classes.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("stuTitle")}</h2>
+          <p className="text-muted-foreground">{t("stuSubtitle")}</p>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger render={
             <Button>
-              <UserPlus className="mr-2 h-4 w-4" /> Add Student
+              <UserPlus className="mr-2 h-4 w-4" /> {t("addStudentBtn")}
             </Button>
           } />
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleSubmit}>
               <DialogHeader>
-                <DialogTitle>Add New Student</DialogTitle>
+                <DialogTitle>{t("addStudentTitle")}</DialogTitle>
                 <DialogDescription>
-                  Enter the details of the new student to enroll them in the madarsa.
+                  {t("addStudentDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name">{t("fullName")}</Label>
                   <Input 
                     id="name" 
                     placeholder="E.g. Ahmed Raza" 
@@ -161,21 +163,20 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="class">Class</Label>
+                  <Label htmlFor="class">{t("class")}</Label>
                   <select 
                     id="class"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
                     value={newStudent.class}
                     onChange={(e) => setNewStudent({...newStudent, class: e.target.value})}
                   >
-                    <option value="Hifz Class 1">Hifz Class 1</option>
-                    <option value="Hifz Class 2">Hifz Class 2</option>
-                    <option value="Nazra">Nazra</option>
-                    <option value="Aalim Course">Aalim Course</option>
+                    {availableClasses.map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="parent">Parent/Guardian Name</Label>
+                  <Label htmlFor="parent">{t("parentName")}</Label>
                   <Input 
                     id="parent" 
                     placeholder="Father's name" 
@@ -185,7 +186,7 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="phone">Contact Phone</Label>
+                  <Label htmlFor="phone">{t("phone")}</Label>
                   <Input 
                     id="phone" 
                     placeholder="0300-1234567" 
@@ -196,7 +197,7 @@ export default function StudentsPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Student</Button>
+                <Button type="submit">{t("saveStudent")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -209,14 +210,14 @@ export default function StudentsPage() {
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleEditSubmit}>
               <DialogHeader>
-                <DialogTitle>Edit Student Details</DialogTitle>
+                <DialogTitle>{t("editStudentTitle")}</DialogTitle>
                 <DialogDescription>
-                  Modify the profile details of the student.
+                  {t("editStudentDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-name">Full Name</Label>
+                  <Label htmlFor="edit-name">{t("fullName")}</Label>
                   <Input 
                     id="edit-name" 
                     value={editingStudent.name}
@@ -225,21 +226,20 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-class">Class</Label>
+                  <Label htmlFor="edit-class">{t("class")}</Label>
                   <select 
                     id="edit-class"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
                     value={editingStudent.class}
                     onChange={(e) => setEditingStudent({...editingStudent, class: e.target.value})}
                   >
-                    <option value="Hifz Class 1">Hifz Class 1</option>
-                    <option value="Hifz Class 2">Hifz Class 2</option>
-                    <option value="Nazra">Nazra</option>
-                    <option value="Aalim Course">Aalim Course</option>
+                    {availableClasses.map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-parent">Parent/Guardian Name</Label>
+                  <Label htmlFor="edit-parent">{t("parentName")}</Label>
                   <Input 
                     id="edit-parent" 
                     value={editingStudent.parentName}
@@ -248,7 +248,7 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-phone">Contact Phone</Label>
+                  <Label htmlFor="edit-phone">{t("phone")}</Label>
                   <Input 
                     id="edit-phone" 
                     value={editingStudent.phone}
@@ -257,20 +257,20 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-status">Status</Label>
+                  <Label htmlFor="edit-status">{t("status")}</Label>
                   <select 
                     id="edit-status"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
                     value={editingStudent.status}
                     onChange={(e) => setEditingStudent({...editingStudent, status: e.target.value as any})}
                   >
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="Active">{t("statusActive")}</option>
+                    <option value="Inactive">{t("statusInactive")}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Update Student</Button>
+                <Button type="submit">{t("updateStudent")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -282,14 +282,14 @@ export default function StudentsPage() {
         <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
           <DialogContent className="sm:max-w-[400px]">
             <DialogHeader>
-              <DialogTitle className="text-destructive">Delete Student</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to delete student <strong>{deletingStudent.name}</strong>? This action cannot be undone.
+              <DialogTitle className="text-destructive">{t("deleteStudentTitle")}</DialogTitle>
+              <DialogDescription className="text-left pt-2">
+                {t("deleteStudentDesc", { name: deletingStudent.name })}
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter className="gap-2 sm:gap-0">
-              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
+            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>{t("cancel")}</Button>
+              <Button variant="destructive" onClick={handleDeleteConfirm}>{t("delete")}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -298,12 +298,12 @@ export default function StudentsPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle>All Students</CardTitle>
+            <CardTitle>{t("allStudents")}</CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative w-full md:w-64">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input 
-                  placeholder="Search students..." 
+                  placeholder={t("searchStudents")}
                   className="pl-8" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -311,7 +311,7 @@ export default function StudentsPage() {
               </div>
               <Button variant="outline" size="icon">
                 <Filter className="h-4 w-4" />
-                <span className="sr-only">Filter</span>
+                <span className="sr-only">{t("filter")}</span>
               </Button>
             </div>
           </div>
@@ -321,12 +321,12 @@ export default function StudentsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">ID</TableHead>
-                  <TableHead>Student</TableHead>
-                  <TableHead className="hidden md:table-cell">Class</TableHead>
-                  <TableHead className="hidden lg:table-cell">Parent</TableHead>
-                  <TableHead className="hidden sm:table-cell">Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="w-[80px]">{t("stuId")}</TableHead>
+                  <TableHead>{t("student")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("class")}</TableHead>
+                  <TableHead className="hidden lg:table-cell">{t("parent")}</TableHead>
+                  <TableHead className="hidden sm:table-cell">{t("status")}</TableHead>
+                  <TableHead className="text-right">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -360,7 +360,7 @@ export default function StudentsPage() {
                         <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                           student.status === "Active" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-muted text-muted-foreground"
                         }`}>
-                          {student.status}
+                          {student.status === "Active" ? t("statusActive") : t("statusInactive")}
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
@@ -372,16 +372,16 @@ export default function StudentsPage() {
                             </Button>
                           } />
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => handleEditClick(student)}>
-                              <Pencil className="mr-2 h-4 w-4" /> Edit Student
+                              <Pencil className="mr-2 h-4 w-4" /> {t("editStudentTitle")}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleDeleteClick(student)} className="text-destructive">
-                              <Trash className="mr-2 h-4 w-4 text-destructive" /> Delete Student
+                              <Trash className="mr-2 h-4 w-4 text-destructive" /> {t("deleteStudentTitle")}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem><FileText className="mr-2 h-4 w-4" /> View Profile</DropdownMenuItem>
-                            <DropdownMenuItem><Phone className="mr-2 h-4 w-4" /> Contact Parent</DropdownMenuItem>
+                            <DropdownMenuItem><FileText className="mr-2 h-4 w-4" /> {t("profile")}</DropdownMenuItem>
+                            <DropdownMenuItem><Phone className="mr-2 h-4 w-4" /> {t("phone")}</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

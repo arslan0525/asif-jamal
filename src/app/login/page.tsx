@@ -7,21 +7,22 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lock, User } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 export default function LoginPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const { t } = useLanguage()
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
-    // Simulate authentication
+    // Simulate authentication and set auth cookie
     setTimeout(() => {
-      // In a real app, you would check credentials here against Supabase
-      // For now, we accept any login and redirect to the dashboard
+      document.cookie = "auth=true; path=/; max-age=86400" // 1 day
       router.push("/")
     }, 1500)
   }
@@ -30,15 +31,15 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-primary font-urdu">مدرسہ مینجمنٹ سسٹم</h1>
-          <p className="text-muted-foreground mt-2">Sign in to access the admin panel</p>
+          <h1 className="text-3xl font-bold tracking-tight text-primary font-urdu">{t("loginTitle")}</h1>
+          <p className="text-muted-foreground mt-2">{t("loginSubtitle")}</p>
         </div>
 
         <Card className="border-primary/20 shadow-lg">
           <form onSubmit={handleLogin}>
             <CardHeader>
-              <CardTitle>Login</CardTitle>
-              <CardDescription>Enter your credentials to continue</CardDescription>
+              <CardTitle>{t("loginCardTitle")}</CardTitle>
+              <CardDescription>{t("loginCardDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {error && (
@@ -47,7 +48,7 @@ export default function LoginPage() {
                 </div>
               )}
               <div className="space-y-2">
-                <Label htmlFor="email">Email / Username</Label>
+                <Label htmlFor="email">{t("emailLabel")}</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input id="email" type="text" placeholder="admin@madarsa.com" required className="pl-9" />
@@ -55,8 +56,8 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <a href="#" className="text-xs text-primary hover:underline">Forgot password?</a>
+                  <Label htmlFor="password">{t("passwordLabel")}</Label>
+                  <a href="#" className="text-xs text-primary hover:underline">{t("forgotPassword")}</a>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -66,14 +67,14 @@ export default function LoginPage() {
             </CardContent>
             <CardFooter>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? t("signingIn") : t("signInBtn")}
               </Button>
             </CardFooter>
           </form>
         </Card>
         
         <p className="text-center text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} Madarsa Management System. All rights reserved.
+          &copy; {new Date().getFullYear()} {t("copyright")}
         </p>
       </div>
     </div>

@@ -24,8 +24,10 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useLocalStorage, initialFees, FeeRecord } from "@/lib/store"
+import { useLanguage } from "@/components/language-provider"
 
 export default function FeesPage() {
+  const { t } = useLanguage()
   const [feesList, setFeesList] = useLocalStorage<FeeRecord[]>("madarsa_fees", initialFees)
   const [searchQuery, setSearchQuery] = useState("")
   const [isOpen, setIsOpen] = useState(false)
@@ -142,26 +144,26 @@ export default function FeesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Fees Management</h2>
-          <p className="text-muted-foreground">Collect fees and track payment history.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("feesTitle")}</h2>
+          <p className="text-muted-foreground">{t("feesSubtitle")}</p>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger render={
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Collect Fee
+              <Plus className="mr-2 h-4 w-4" /> {t("collectFee")}
             </Button>
           } />
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleSubmit}>
               <DialogHeader>
-                <DialogTitle>Collect Student Fee</DialogTitle>
+                <DialogTitle>{t("collectStudentFee")}</DialogTitle>
                 <DialogDescription>
-                  Record a fee payment for a student.
+                  {t("collectStudentFeeDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="student">Student Name</Label>
+                  <Label htmlFor="student">{t("fullName")}</Label>
                   <Input 
                     id="student" 
                     placeholder="E.g. Ahmed Raza" 
@@ -171,7 +173,7 @@ export default function FeesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="amount">Amount (Rs)</Label>
+                  <Label htmlFor="amount">{t("amountLabel")}</Label>
                   <Input 
                     id="amount" 
                     type="number"
@@ -182,7 +184,7 @@ export default function FeesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="month">Billing Month</Label>
+                  <Label htmlFor="month">{t("billingMonth")}</Label>
                   <Input 
                     id="month" 
                     placeholder="E.g. Sep 2023" 
@@ -192,20 +194,20 @@ export default function FeesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="status">Status</Label>
+                  <Label htmlFor="status">{t("status")}</Label>
                   <select 
                     id="status"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newFee.status}
                     onChange={(e) => setNewFee({...newFee, status: e.target.value as any})}
                   >
-                    <option value="Paid">Paid</option>
-                    <option value="Pending">Pending</option>
+                    <option value="Paid">{t("paid")}</option>
+                    <option value="Pending">{t("pending")}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Record</Button>
+                <Button type="submit">{t("saveRecord")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -218,14 +220,14 @@ export default function FeesPage() {
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleEditSubmit}>
               <DialogHeader>
-                <DialogTitle>Edit Fee Record</DialogTitle>
+                <DialogTitle>{t("editFeeTitle")}</DialogTitle>
                 <DialogDescription>
-                  Modify the fee payment details.
+                  {t("editFeeDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-student">Student Name</Label>
+                  <Label htmlFor="edit-student">{t("fullName")}</Label>
                   <Input 
                     id="edit-student" 
                     value={editingFee.student}
@@ -234,7 +236,7 @@ export default function FeesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-amount">Amount (Rs)</Label>
+                  <Label htmlFor="edit-amount">{t("amountLabel")}</Label>
                   <Input 
                     id="edit-amount" 
                     type="number"
@@ -244,7 +246,7 @@ export default function FeesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-month">Billing Month</Label>
+                  <Label htmlFor="edit-month">{t("billingMonth")}</Label>
                   <Input 
                     id="edit-month" 
                     value={editingFee.month}
@@ -253,20 +255,20 @@ export default function FeesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-status">Status</Label>
+                  <Label htmlFor="edit-status">{t("status")}</Label>
                   <select 
                     id="edit-status"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={editingFee.status}
                     onChange={(e) => setEditingFee({...editingFee, status: e.target.value as any})}
                   >
-                    <option value="Paid">Paid</option>
-                    <option value="Pending">Pending</option>
+                    <option value="Paid">{t("paid")}</option>
+                    <option value="Pending">{t("pending")}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Update Record</Button>
+                <Button type="submit">{t("updateRecord")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -278,14 +280,14 @@ export default function FeesPage() {
         <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
           <DialogContent className="sm:max-w-[400px]">
             <DialogHeader>
-              <DialogTitle className="text-destructive">Delete Fee Record</DialogTitle>
+              <DialogTitle className="text-destructive">{t("deleteFeeTitle")}</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete this fee record of <strong>Rs {deletingFee.amount.toLocaleString()}</strong> for <strong>{deletingFee.student}</strong>? This action is irreversible.
+                {t("deleteFeeDesc", { amount: deletingFee.amount.toLocaleString(), name: deletingFee.student })}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-2 sm:gap-0">
-              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
+              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>{t("cancel")}</Button>
+              <Button variant="destructive" onClick={handleDeleteConfirm}>{t("delete")}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -294,7 +296,7 @@ export default function FeesPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Collected This Month</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("collectedThisMonth")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">Rs {collectedThisMonth.toLocaleString()}</div>
@@ -302,7 +304,7 @@ export default function FeesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Pending Dues</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("pendingDues")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">Rs {pendingDues.toLocaleString()}</div>
@@ -310,7 +312,7 @@ export default function FeesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Paid Records</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totalPaidRecords")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalStudentsWithFees}</div>
@@ -321,12 +323,12 @@ export default function FeesPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle>Recent Fee Records</CardTitle>
+            <CardTitle>{t("recentFeeRecords")}</CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative w-full md:w-64">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input 
-                  placeholder="Search records..." 
+                  placeholder={t("searchRecords")} 
                   className="pl-8" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -340,12 +342,12 @@ export default function FeesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Receipt</TableHead>
-                  <TableHead>Student</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead className="hidden md:table-cell">Month</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("receipt")}</TableHead>
+                  <TableHead>{t("student")}</TableHead>
+                  <TableHead>{t("amount")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("billingMonth")}</TableHead>
+                  <TableHead>{t("status")}</TableHead>
+                  <TableHead className="text-right">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -364,7 +366,7 @@ export default function FeesPage() {
                           }`}
                         >
                           {record.status === "Paid" && <Check className="h-3 w-3 mr-1" />}
-                          {record.status}
+                          {record.status === "Paid" ? t("paid") : t("pending")}
                         </button>
                       </TableCell>
                       <TableCell className="text-right">
@@ -372,12 +374,12 @@ export default function FeesPage() {
                           {record.status === "Paid" ? (
                             <Button variant="outline" size="sm" className="h-8">
                               <ReceiptText className="h-4 w-4 md:mr-1" />
-                              <span className="hidden md:inline text-xs">Receipt</span>
+                              <span className="hidden md:inline text-xs">{t("receipt")}</span>
                             </Button>
                           ) : (
                             <Button size="sm" variant="secondary" className="h-8">
                               <Phone className="h-4 w-4 md:mr-1" />
-                              <span className="hidden md:inline text-xs">Remind</span>
+                              <span className="hidden md:inline text-xs">{t("remind")}</span>
                             </Button>
                           )}
                           <Button variant="ghost" size="sm" onClick={() => handleEditClick(record)}>

@@ -24,8 +24,10 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useLocalStorage, initialExpenses, Expense } from "@/lib/store"
+import { useLanguage } from "@/components/language-provider"
 
 export default function ExpensesPage() {
+  const { t, isUrdu } = useLanguage()
   const [expensesList, setExpensesList] = useLocalStorage<Expense[]>("madarsa_expenses", initialExpenses)
   const [searchQuery, setSearchQuery] = useState("")
   const [isOpen, setIsOpen] = useState(false)
@@ -120,26 +122,26 @@ export default function ExpensesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Expenses</h2>
-          <p className="text-muted-foreground">Track and manage all madarsa expenditures.</p>
+          <h2 className="text-2xl font-bold tracking-tight">{t("expTitle")}</h2>
+          <p className="text-muted-foreground">{t("expSubtitle")}</p>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger render={
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Expense
+              <Plus className="mr-2 h-4 w-4" /> {t("addExpenseBtn")}
             </Button>
           } />
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleSubmit}>
               <DialogHeader>
-                <DialogTitle>Record New Expense</DialogTitle>
+                <DialogTitle>{t("addExpenseTitle")}</DialogTitle>
                 <DialogDescription>
-                  Enter details of the outgoing expense.
+                  {t("addExpenseDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="category">Category / Item</Label>
+                  <Label htmlFor="category">{t("categoryItem")}</Label>
                   <Input 
                     id="category" 
                     placeholder="E.g. Electricity, Kitchen groceries, Internet" 
@@ -149,7 +151,7 @@ export default function ExpensesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="amount">Amount (Rs)</Label>
+                  <Label htmlFor="amount">{t("amountLabel")}</Label>
                   <Input 
                     id="amount" 
                     type="number"
@@ -160,21 +162,21 @@ export default function ExpensesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="recordedBy">Recorded By</Label>
+                  <Label htmlFor="recordedBy">{t("recordedByLabel")}</Label>
                   <select 
                     id="recordedBy"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newExpense.recordedBy}
                     onChange={(e) => setNewExpense({...newExpense, recordedBy: e.target.value})}
                   >
-                    <option value="Admin">Admin</option>
-                    <option value="Qari Sahab">Qari Sahab</option>
-                    <option value="Accountant">Accountant</option>
+                    <option value="Admin">{isUrdu ? "ایڈمن" : "Admin"}</option>
+                    <option value="Qari Sahab">{isUrdu ? "قاری صاحب" : "Qari Sahab"}</option>
+                    <option value="Accountant">{isUrdu ? "اکاؤنٹنٹ" : "Accountant"}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Expense</Button>
+                <Button type="submit">{t("saveExpense")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -187,14 +189,14 @@ export default function ExpensesPage() {
           <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleEditSubmit}>
               <DialogHeader>
-                <DialogTitle>Edit Expense</DialogTitle>
+                <DialogTitle>{t("editExpenseTitle")}</DialogTitle>
                 <DialogDescription>
-                  Modify the details of this expense.
+                  {t("editExpenseDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-category">Category / Item</Label>
+                  <Label htmlFor="edit-category">{t("categoryItem")}</Label>
                   <Input 
                     id="edit-category" 
                     value={editingExpense.category}
@@ -203,7 +205,7 @@ export default function ExpensesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-amount">Amount (Rs)</Label>
+                  <Label htmlFor="edit-amount">{t("amountLabel")}</Label>
                   <Input 
                     id="edit-amount" 
                     type="number"
@@ -213,21 +215,21 @@ export default function ExpensesPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-recordedBy">Recorded By</Label>
+                  <Label htmlFor="edit-recordedBy">{t("recordedByLabel")}</Label>
                   <select 
                     id="edit-recordedBy"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={editingExpense.recordedBy}
                     onChange={(e) => setEditingExpense({...editingExpense, recordedBy: e.target.value})}
                   >
-                    <option value="Admin">Admin</option>
-                    <option value="Qari Sahab">Qari Sahab</option>
-                    <option value="Accountant">Accountant</option>
+                    <option value="Admin">{isUrdu ? "ایڈمن" : "Admin"}</option>
+                    <option value="Qari Sahab">{isUrdu ? "قاری صاحب" : "Qari Sahab"}</option>
+                    <option value="Accountant">{isUrdu ? "اکاؤنٹنٹ" : "Accountant"}</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Update Expense</Button>
+                <Button type="submit">{t("updateRecord")}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -238,57 +240,57 @@ export default function ExpensesPage() {
       {deletingExpense && (
         <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
           <DialogContent className="sm:max-w-[400px]">
-            <DialogHeader>
-              <DialogTitle className="text-destructive">Delete Expense Record</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to delete this expense of <strong>Rs {deletingExpense.amount.toLocaleString()}</strong> for <strong>{deletingExpense.category}</strong>? This action is permanent.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="gap-2 sm:gap-0">
-              <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
-            </DialogFooter>
+             <DialogHeader>
+               <DialogTitle className="text-destructive">{t("deleteExpenseTitle")}</DialogTitle>
+               <DialogDescription>
+                 {t("deleteExpenseDesc", { amount: deletingExpense.amount.toLocaleString(), category: deletingExpense.category })}
+               </DialogDescription>
+             </DialogHeader>
+             <DialogFooter className="gap-2 sm:gap-0">
+               <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>{t("cancel")}</Button>
+               <Button variant="destructive" onClick={handleDeleteConfirm}>{t("delete")}</Button>
+             </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Monthly Expenses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">Rs {totalExpenses.toLocaleString()}</div>
-          </CardContent>
-        </Card>
-      </div>
+       <div className="grid gap-4 md:grid-cols-3">
+         <Card>
+           <CardHeader className="pb-2">
+             <CardTitle className="text-sm font-medium">{t("totalMonthlyExpenses")}</CardTitle>
+           </CardHeader>
+           <CardContent>
+             <div className="text-2xl font-bold text-destructive">Rs {totalExpenses.toLocaleString()}</div>
+           </CardContent>
+         </Card>
+       </div>
 
       <Card>
-        <CardHeader className="pb-3">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle>Expense Records</CardTitle>
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search expenses..." 
-                className="pl-8" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-        </CardHeader>
+         <CardHeader className="pb-3">
+           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+             <CardTitle>{t("expenseRecords")}</CardTitle>
+             <div className="relative w-full md:w-64">
+               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+               <Input 
+                 placeholder={t("searchExpenses")} 
+                 className="pl-8" 
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+               />
+             </div>
+           </div>
+         </CardHeader>
         <CardContent>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead className="hidden md:table-cell">Date</TableHead>
-                  <TableHead className="hidden lg:table-cell">Recorded By</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("stuId")}</TableHead>
+                  <TableHead>{t("categoryItem")}</TableHead>
+                  <TableHead>{t("amount")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("date")}</TableHead>
+                  <TableHead className="hidden lg:table-cell">{t("recordedBy")}</TableHead>
+                  <TableHead className="text-right">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -299,13 +301,18 @@ export default function ExpensesPage() {
                       <TableCell>{expense.category}</TableCell>
                       <TableCell className="font-semibold">Rs {expense.amount.toLocaleString()}</TableCell>
                       <TableCell className="hidden md:table-cell">{expense.date}</TableCell>
-                      <TableCell className="hidden lg:table-cell">{expense.recordedBy}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-1">
-                          <Button variant="outline" size="sm" className="h-8">
-                            <Receipt className="h-4 w-4 md:mr-1" />
-                            <span className="hidden md:inline text-xs">Bill</span>
-                          </Button>
+                      <TableCell className="hidden lg:table-cell">
+                      {expense.recordedBy === "Admin" ? (isUrdu ? "ایڈمن" : "Admin") :
+                       expense.recordedBy === "Qari Sahab" ? (isUrdu ? "قاری صاحب" : "Qari Sahab") :
+                       expense.recordedBy === "Accountant" ? (isUrdu ? "اکاؤنٹنٹ" : "Accountant") :
+                       expense.recordedBy}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button variant="outline" size="sm" className="h-8">
+                          <Receipt className="h-4 w-4 md:mr-1" />
+                          <span className="hidden md:inline text-xs">{isUrdu ? "بل" : "Bill"}</span>
+                        </Button>
                           <Button variant="ghost" size="sm" onClick={() => handleEditClick(expense)}>
                             <Pencil className="h-4 w-4" />
                           </Button>
