@@ -95,7 +95,7 @@ export function TopBar() {
       </DropdownMenu>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger render={
           <Button variant="ghost" size="icon" className="rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
@@ -103,7 +103,7 @@ export function TopBar() {
             </Avatar>
             <span className="sr-only">Toggle user menu</span>
           </Button>
-        </DropdownMenuTrigger>
+        } />
         <DropdownMenuContent align="end">
           <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>

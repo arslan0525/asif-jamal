@@ -20,8 +20,15 @@ export const metadata: Metadata = {
   title: "Madarsa Management System",
   description: "Modern Islamic Madarsa Management System. Manage students, attendance, fees, donations, and expenses easily.",
   manifest: "/manifest.json",
+};
+
+export const viewport = {
   themeColor: "#1e40af",
-  viewport: "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
+  minimumScale: 1,
+  initialScale: 1,
+  width: "device-width",
+  shrinkToFit: "no",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
