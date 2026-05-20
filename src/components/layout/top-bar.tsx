@@ -30,8 +30,16 @@ export function TopBar() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [isInstallable, setIsInstallable] = useState(false)
   const [showInstallDialog, setShowInstallDialog] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsStandalone(
+        window.matchMedia("(display-mode: standalone)").matches || 
+        (window.navigator as any).standalone === true
+      )
+    }
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e)
@@ -76,9 +84,15 @@ export function TopBar() {
           <h1 className="text-lg font-semibold md:text-xl font-sans text-primary">{t("logoText")}</h1>
         </div>
         
-        {isInstallable && (
-          <Button variant="default" size="sm" onClick={() => setShowInstallDialog(true)} className="hidden sm:flex bg-emerald-600 hover:bg-emerald-700 text-white">
-            <Download className="mr-2 h-4 w-4" /> {t("installNow")}
+        {!isStandalone && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setShowInstallDialog(true)} 
+            className="flex items-center gap-1.5 border-emerald-600/35 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 shadow-sm"
+          >
+            <Download className="h-4 w-4 text-emerald-600 animate-pulse" />
+            <span className="hidden sm:inline text-xs font-semibold font-sans">{t("installApp")}</span>
           </Button>
         )}
 
