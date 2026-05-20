@@ -123,6 +123,25 @@ export default function DonationsPage() {
     setDeletingDonation(null)
   }
 
+  const handleDownloadDonationsCSV = () => {
+    let csv = "Donations Detailed Breakdown\n"
+    csv += `Date Generated: ${new Date().toLocaleDateString()}\n\n`
+    csv += "Receipt ID,Donor Name,Amount (Rs),Donation Type,Date Received\n"
+    donationsList.forEach(d => {
+      csv += `${d.id},"${d.donor}",${d.amount},"${d.type}","${d.date}"\n`
+    })
+
+    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement("a")
+    const url = URL.createObjectURL(blob)
+    link.setAttribute("href", url)
+    link.setAttribute("download", isUrdu ? "عطیات_رپورٹ.csv" : "donations_report.csv")
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -300,14 +319,24 @@ export default function DonationsPage() {
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <CardTitle>{t("donationRecords")}</CardTitle>
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder={t("searchDonors")} 
-                className="pl-8" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  placeholder={t("searchDonors")} 
+                  className="pl-8" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={handleDownloadDonationsCSV} 
+                className="flex items-center gap-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+              >
+                <Download className="h-4 w-4" />
+                <span>{isUrdu ? "ایکسل ڈاؤن لوڈ" : "Download Excel"}</span>
+              </Button>
             </div>
           </div>
         </CardHeader>
