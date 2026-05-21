@@ -185,8 +185,15 @@ export const translations = {
     saveTeacher: "Save Teacher",
     editTeacherTitle: "Edit Teacher Details",
     editTeacherDesc: "Modify the profile and status of the teacher.",
-    deleteTeacherTitle: "Delete Teacher Record",
     deleteTeacherDesc: "Are you sure you want to delete Qari/Maulana {name}? This action cannot be undone.",
+    teacherProfile: "Teacher Profile",
+    salaryHistory: "Salary History",
+    paySalary: "Pay Salary",
+    salaryPaid: "Salary Paid",
+    salaryPending: "Salary Pending",
+    printSalarySlip: "Print Salary Slip",
+    salaryPaidTitle: "Pay Monthly Salary",
+    salaryPaidDesc: "Record a salary payment for this teacher.",
 
     // Attendance Page
     attTitle: "Attendance",
@@ -397,8 +404,15 @@ export const translations = {
     saveTeacher: "ریکارڈ محفوظ کریں",
     editTeacherTitle: "اسناد کی تفصیل تبدیل کریں",
     editTeacherDesc: "استاد کی پروفائل اور حالت تبدیل کریں۔",
-    deleteTeacherTitle: "استاد کو خارج کریں",
     deleteTeacherDesc: "کیا آپ واقعی قاری/مولانا {name} کو خارج کرنا چاہتے ہیں؟",
+    teacherProfile: "استاد کی پروفائل",
+    salaryHistory: "تنخواہ کا ریکارڈ",
+    paySalary: "تنخواہ ادا کریں",
+    salaryPaid: "تنخواہ ادا شد",
+    salaryPending: "تنخواہ باقی",
+    printSalarySlip: "سیلری سلپ پرنٹ کریں",
+    salaryPaidTitle: "ماہانہ تنخواہ ادا کریں",
+    salaryPaidDesc: "اس استاد کی تنخواہ کی ادائیگی درج کریں۔",
 
     // Attendance Page
     attTitle: "حاضری",

@@ -46,6 +46,15 @@ export interface Teacher {
   status: "Active" | "On Leave"
 }
 
+export interface SalaryRecord {
+  id: string
+  teacher: string
+  amount: number
+  month: string
+  status: "Paid" | "Pending"
+  date: string
+}
+
 export interface InventoryItem {
   id: string
   item: string
@@ -108,6 +117,12 @@ export const initialTeachers: Teacher[] = [
   { id: "TCH-001", name: "Qari Tariq", class: "Hifz 1", phone: "0300-1112223", salary: 25000, status: "Active" },
   { id: "TCH-002", name: "Maulana Usman", class: "Aalim", phone: "0311-4445556", salary: 35000, status: "Active" },
   { id: "TCH-003", name: "Hafiz Bilal", class: "Nazra 1", phone: "0322-7778889", salary: 20000, status: "On Leave" },
+]
+
+export const initialSalaries: SalaryRecord[] = [
+  { id: "SAL-101", teacher: "Qari Tariq", amount: 25000, month: "Sep 2023", status: "Paid", date: "02 Sep 2023" },
+  { id: "SAL-102", teacher: "Maulana Usman", amount: 35000, month: "Sep 2023", status: "Paid", date: "02 Sep 2023" },
+  { id: "SAL-103", teacher: "Hafiz Bilal", amount: 20000, month: "Sep 2023", status: "Pending", date: "-" },
 ]
 
 export const initialInventory: InventoryItem[] = [
